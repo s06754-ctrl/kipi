@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Team Kipi – VIB</title>
+<meta name="application-name" content="VIB Training Kipi">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VIB Kipi">
+<meta name="theme-color" content="#003E7E">
+<link rel="manifest" id="pwa-manifest">
+<script>
+(function(){
+  const icon=`<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'><rect width='192' height='192' rx='38' fill='%23003E7E'/><rect x='14' y='14' width='80' height='80' rx='16' fill='%23F47920'/><text x='54' y='72' font-family='Arial' font-weight='900' font-size='36' fill='white' text-anchor='middle'>VIB</text><rect x='104' y='14' width='74' height='18' rx='5' fill='%231A6FC4'/><rect x='104' y='42' width='60' height='18' rx='5' fill='%231A6FC4'/><rect x='104' y='70' width='68' height='18' rx='5' fill='%231A6FC4'/><rect x='14' y='108' width='164' height='14' rx='4' fill='%230057A8' opacity='.5'/><rect x='14' y='130' width='130' height='14' rx='4' fill='%230057A8' opacity='.4'/><rect x='14' y='152' width='148' height='14' rx='4' fill='%230057A8' opacity='.3'/><rect x='14' y='174' width='100' height='10' rx='3' fill='%23F47920' opacity='.6'/></svg>`;
+  const manifest={name:'VIB Training Team Kipi',short_name:'VIB Kipi',description:'Lộ trình đào tạo PB mới – Vietnam International Bank',start_url:window.location.href,display:'standalone',background_color:'#F4F8FE',theme_color:'#003E7E',orientation:'portrait',icons:[{src:'data:image/svg+xml,'+icon,sizes:'192x192',type:'image/svg+xml'},{src:'data:image/svg+xml,'+icon,sizes:'512x512',type:'image/svg+xml'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').href=url;
+  // Apple touch icon inline SVG
+  const link=document.createElement('link');
+  link.rel='apple-touch-icon';
+  link.href='data:image/svg+xml,'+icon;
+  document.head.appendChild(link);
+})();
+</script>
+<style>
+:root{
+  --blue:#0057A8;--bdk:#003E7E;--bmd:#1A6FC4;--blt:#E8F1FB;--bpl:#F0F6FF;
+  --org:#F47920;--odk:#C45F0A;--olt:#FEF3E8;
+  --txt:#1A2B4A;--mut:#5A718A;--sft:#8DA0B8;
+  --bdr:#D6E4F5;--bg:#F4F8FE;--wh:#fff;
+  --ok:#1A9E5A;--okb:#EAF7EF;--warn:#C07A10;--err:#C0392B;--erb:#FDECEA;--gray:#EEF3FA;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px}
+
+/* HEADER – logo + tabs only, no inputs */
+.hdr{background:linear-gradient(135deg,#002B5C,#003E7E 40%,#0057A8 75%,#1A6FC4);position:sticky;top:0;z-index:300;box-shadow:0 4px 20px rgba(0,43,92,.4)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+.logo-row{display:flex;align-items:center;gap:12px}
+.logo-sq{width:40px;height:40px;border-radius:10px;background:linear-gradient(145deg,#FF9A40,#F47920);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;box-shadow:0 3px 0 #8B3000,0 5px 14px rgba(244,121,32,.5)}
+.hdr-title h1{font-size:17px;font-weight:800;color:#fff}
+.hdr-title p{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px}
+.hdr-btns{display:flex;gap:8px;align-items:center}
+.nav-row{display:flex;padding:0 24px;background:rgba(0,0,0,.2);overflow-x:auto}
+.nav-row::-webkit-scrollbar{height:0}
+.t-btn{padding:10px 16px;font-size:13px;font-weight:500;color:rgba(255,255,255,.58);border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-family:inherit;transition:all .2s;flex-shrink:0}
+.t-btn:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.06)}
+.t-btn.on{color:#fff;border-bottom-color:var(--org);background:rgba(255,255,255,.1);font-weight:700}
+
+/* CONTROL BAR – always visible, never hidden */
+#ctrl-bar{background:var(--wh);border-bottom:2px solid var(--bdr);box-shadow:0 2px 12px rgba(0,87,168,.07)}
+.cb-inner{padding:12px 24px;display:flex;flex-direction:column;gap:10px}
+.cb-row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cb-row2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* Input fields */
+.f-group{display:flex;align-items:center;gap:0;border:2px solid var(--bdr);border-radius:10px;overflow:hidden;background:var(--wh);transition:border-color .15s;flex:1;min-width:180px;max-width:280px}
+.f-group:focus-within{border-color:var(--blue)}
+.f-icon{width:36px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--bpl);flex-shrink:0;border-right:1px solid var(--bdr)}
+.f-wrap{flex:1;display:flex;flex-direction:column;padding:3px 10px}
+.f-lbl{font-size:9px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;line-height:1}
+.f-in{border:none;outline:none;font-size:13px;font-weight:600;color:var(--txt);font-family:inherit;background:transparent;width:100%;padding:1px 0}
+.f-in::placeholder{color:var(--sft);font-weight:400}
+
+.f-date{display:flex;align-items:center;gap:0;border:2px solid var(--bdr);border-radius:10px;overflow:hidden;background:var(--wh);transition:border-color .15s;min-width:160px}
+.f-date:focus-within{border-color:var(--blue)}
+.f-date .f-icon{background:var(--bpl);border-right:1px solid var(--bdr)}
+.f-date input{border:none;outline:none;font-size:12px;font-family:inherit;color:var(--txt);background:transparent;padding:0 10px;height:38px}
+
+.week-tag{background:linear-gradient(135deg,var(--blue),var(--bmd));color:#fff;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 3px 0 #001E55}
+
+.save-tag{display:flex;align-items:center;gap:5px;background:var(--okb);border:1px solid #9DDCB8;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--ok);transition:background .3s}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* 3D BUTTONS */
+.b-org{background:linear-gradient(180deg,#FF9A40,#F47920 45%,#D86000);color:#fff;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 0 #8B3000,0 6px 14px rgba(244,121,32,.35);transform:translateY(0);transition:transform .1s,box-shadow .1s;white-space:nowrap}
+.b-org:active{transform:translateY(3px);box-shadow:0 1px 0 #8B3000}
+.b-blue{background:linear-gradient(180deg,#2E83D0,#0057A8 45%,#003A80);color:#fff;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 0 #001E55,0 6px 14px rgba(0,87,168,.35);transform:translateY(0);transition:transform .1s,box-shadow .1s;white-space:nowrap}
+.b-blue:active{transform:translateY(3px);box-shadow:0 1px 0 #001E55}
+.b-gray{background:linear-gradient(180deg,#F6F9FF,#DDE8F5);color:var(--bdk);border:1.5px solid var(--bdr);padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 0 #B0C4D8;transform:translateY(0);transition:transform .1s,box-shadow .1s;white-space:nowrap}
+.b-gray:active{transform:translateY(2px);box-shadow:0 1px 0 #B0C4D8}
+.b-green{background:linear-gradient(180deg,#28C76A,#1A9E5A 45%,#0E7040);color:#fff;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 0 #08502A,0 6px 14px rgba(26,158,90,.35);transform:translateY(0);transition:transform .1s,box-shadow .1s;white-space:nowrap}
+.b-green:active{transform:translateY(3px);box-shadow:0 1px 0 #08502A}
+.ic{flex-shrink:0}
+
+/* INFO CARD – appears at top of each tab */
+.info-card{background:var(--wh);border:1px solid var(--bdr);border-radius:14px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 2px 10px rgba(0,87,168,.06)}
+.ic-fields{display:flex;align-items:center;gap:0;flex-wrap:wrap;flex:1}
+.ic-item{display:flex;align-items:center;gap:10px;padding:0 18px;border-right:1px solid var(--bdr)}
+.ic-item:first-child{padding-left:0}
+.ic-item:last-child{border-right:none}
+.ic-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ic-lbl{font-size:9px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.ic-val{font-size:13px;font-weight:700;color:var(--bdk)}
+.ic-val.empty{color:var(--sft);font-weight:400;font-style:italic}
+.ic-ring{position:relative;width:52px;height:52px;flex-shrink:0}
+.ic-ring svg{transform:rotate(-90deg);position:absolute;inset:0}
+.ic-ring-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--bdk)}
+
+/* MAIN */
+.main{padding:18px 24px;max-width:1200px;margin:0 auto}
+.tab-p{display:none;animation:fi .22s ease}
+.tab-p.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:11px;border-bottom:2px solid var(--blt)}
+.sec-ti h2{font-size:15px;font-weight:800;color:var(--bdk);display:flex;align-items:center;gap:8px}
+.sec-ti p{font-size:11px;color:var(--mut);margin-top:2px}
+
+/* STAT CARDS */
+.s-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.sc{background:var(--wh);border-radius:12px;padding:14px 16px;border:1px solid var(--bdr);position:relative;overflow:hidden;box-shadow:0 4px 0 #C5D5E8,0 5px 14px rgba(0,87,168,.07);transition:transform .15s}
+.sc:hover{transform:translateY(-2px)}
+.sc::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:12px 0 0 12px}
+.sc.c1::before{background:var(--blue)}.sc.c2::before{background:var(--ok)}.sc.c3::before{background:var(--org)}.sc.c4::before{background:var(--warn)}
+.sl{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:600}
+.sv{font-size:26px;font-weight:800;line-height:1}
+.sc.c1 .sv{color:var(--bdk)}.sc.c2 .sv{color:var(--ok)}.sc.c3 .sv{color:var(--odk)}.sc.c4 .sv{color:var(--warn)}
+.ss{font-size:10px;color:var(--sft);margin-top:3px}
+
+/* TRAIN BOX */
+.tbox{background:var(--wh);border-radius:12px;border:1px solid var(--bdr);overflow:hidden;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,87,168,.05)}
+.tbhd{background:linear-gradient(90deg,var(--bpl),#F8FCFF);padding:11px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr)}
+.mtag{border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;white-space:nowrap}
+.mtag.bl{background:var(--blue);color:#fff;box-shadow:0 2px 0 #002255}
+.mtag.og{background:var(--org);color:#fff;box-shadow:0 2px 0 #7A3000}
+.tbhd h3{font-size:13px;font-weight:700;color:var(--bdk)}
+.tbhd p{font-size:11px;color:var(--mut)}
+
+/* TABLE */
+.tw{overflow-x:auto}
+table.tt{width:100%;border-collapse:collapse;min-width:860px}
+table.tt th{background:var(--gray);font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;padding:9px 10px;text-align:left;border-bottom:1px solid var(--bdr)}
+table.tt td{padding:10px 10px;border-bottom:1px solid var(--bdr);font-size:12px;vertical-align:middle}
+table.tt tr:last-child td{border-bottom:none}
+table.tt tr:hover td{background:#F5FAFF}
+.tn{font-weight:700;color:var(--bdk);margin-bottom:2px;font-size:12px}
+.td2{font-size:10px;color:var(--mut);line-height:1.5}
+.nb{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:var(--blt);color:var(--blue);box-shadow:0 2px 0 #A8C0DC}
+.nb.og{background:var(--olt);color:var(--odk);box-shadow:0 2px 0 #EBBB88}
+.sel{border:1.5px solid var(--bdr);border-radius:8px;padding:5px 6px;font-size:11px;outline:none;background:var(--wh);cursor:pointer;width:100%;font-family:inherit;color:var(--txt)}
+.sel:focus{border-color:var(--blue)}
+.dti{border:1.5px solid var(--bdr);border-radius:8px;padding:5px 6px;font-size:11px;outline:none;background:var(--wh);font-family:inherit;width:104px;color:var(--txt)}
+.dti:focus{border-color:var(--blue)}
+.nta{border:1.5px solid var(--bdr);border-radius:8px;padding:5px 6px;font-size:11px;outline:none;background:var(--wh);font-family:inherit;width:100%;color:var(--txt);resize:none}
+.nta:focus{border-color:var(--blue)}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.bnd{background:#EEF3FA;color:var(--mut)}.bpr{background:var(--olt);color:var(--odk)}.bok{background:var(--okb);color:var(--ok)}.brv{background:var(--erb);color:var(--err)}
+
+/* STARS */
+.stars{white-space:nowrap}
+.star{color:#D8E8F5;cursor:pointer;transition:color .1s,transform .12s;display:inline-block;font-size:15px}
+.star:hover{transform:scale(1.3)}
+.star.lit{color:var(--org)}
+
+/* PROGRESS */
+.pbw{background:var(--bdr);border-radius:8px;height:8px;overflow:hidden}
+.pb{height:8px;border-radius:8px;background:linear-gradient(90deg,#003E7E,#0057A8,#F47920);transition:width .5s ease}
+
+/* GUIDE */
+.gg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.gc{background:var(--wh);border-radius:12px;padding:14px;border:1px solid var(--bdr);border-left:4px solid var(--blue);box-shadow:0 3px 0 #C4D4E6}
+.gc.og{border-left-color:var(--org);box-shadow:0 3px 0 #EDBB88}
+.gc h4{font-size:13px;font-weight:700;color:var(--bdk);margin-bottom:5px}
+.gc p{font-size:12px;color:var(--mut);line-height:1.7}
+.tips{background:#FFF8F2;border:1px solid #F9C890;border-radius:12px;padding:13px 15px;margin-top:12px}
+.tips h4{font-size:12px;font-weight:700;color:var(--odk);margin-bottom:6px}
+.tips li{font-size:12px;color:var(--txt);margin-bottom:4px;line-height:1.6}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,20,50,.55);z-index:900;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ov.on{display:flex;animation:ofi .18s ease}
+@keyframes ofi{from{opacity:0}to{opacity:1}}
+.mdl{background:var(--wh);border-radius:18px;max-width:820px;width:95%;max-height:92vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.22);animation:mfi .22s ease}
+@keyframes mfi{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.mhd{background:linear-gradient(135deg,var(--bdk),var(--bmd));padding:18px 24px;border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between}
+.mhd h2{font-size:15px;font-weight:800;color:#fff}
+.mhd p{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.mcl{background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.mcl:hover{background:rgba(255,255,255,.25)}
+.mb{padding:20px 24px}
+.rs{margin-bottom:18px}
+.rs h3{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:9px;padding-bottom:5px;border-bottom:2px solid var(--blt)}
+.rmg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.rmi{background:var(--bpl);border-radius:9px;padding:9px 12px;border:1px solid var(--bdr)}
+.rmi label{font-size:10px;color:var(--mut);display:block;margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.rmi span{font-size:13px;font-weight:800;color:var(--bdk)}
+.rpr{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.rl{font-size:11px;min-width:195px}.rw{flex:1;background:var(--bdr);border-radius:6px;height:8px;overflow:hidden}
+.rb{height:8px;border-radius:6px}.rp{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+table.rt{width:100%;border-collapse:collapse;font-size:11px}
+table.rt th{background:var(--gray);padding:7px 8px;text-align:left;font-size:10px;color:var(--mut);font-weight:700;border-bottom:1px solid var(--bdr)}
+table.rt td{padding:7px 8px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+table.rt tr:last-child td{border-bottom:none}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bdk);color:#fff;padding:10px 20px;border-radius:28px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 4px 18px rgba(0,0,0,.2);white-space:nowrap}
+#toast.ok{background:#0A7A3A}#toast.err{background:#B52A2A}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#exp-canvas{display:none}
+@media(max-width:760px){.s-row{grid-template-columns:1fr 1fr}.gg{grid-template-columns:1fr}.ic-item{padding:6px 10px;border-right:none;border-bottom:1px solid var(--bdr)}.ic-item:last-child{border-bottom:none}.info-card{flex-direction:column;align-items:flex-start}}
+@media print{.hdr,#ctrl-bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- HEADER: logo + nav only -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo-row">
+      <div class="logo-sq">VIB</div>
+      <div class="hdr-title">
+        <h1>Training Team Kipi</h1>
+        <p>Vietnam International Bank · Lộ trình đào tạo PB mới</p>
+      </div>
+    </div>
+    <div class="hdr-btns">
+      <button class="b-org" onclick="openReport()">
+        <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 17v-2m3 2v-4m3 4v-6M5 20h14a2 2 0 002-2V7l-5-5H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        Báo cáo tuần
+      </button>
+    </div>
+  </div>
+  <div class="nav-row" id="nav-row">
+    <button class="t-btn on" data-tab="tong-quan">🏠 Tổng quan</button>
+    <button class="t-btn" data-tab="tiet-kiem">💰 Tiết Kiệm</button>
+    <button class="t-btn" data-tab="the-tin-dung">💳 Thẻ Tín Dụng</button>
+    <button class="t-btn" data-tab="huong-dan">📖 Hướng dẫn</button>
+  </div>
+</div>
+
+<!-- CONTROL BAR: inputs + action buttons, ALWAYS VISIBLE -->
+<div id="ctrl-bar">
+  <div class="cb-inner">
+
+    <!-- Row 1: name inputs + date + week -->
+    <div class="cb-row1">
+      <div class="f-group">
+        <div class="f-icon">👤</div>
+        <div class="f-wrap">
+          <div class="f-lbl">Người đào tạo</div>
+          <input class="f-in" id="inp-trainer" type="text" placeholder="Nhập tên người đào tạo...">
+        </div>
+      </div>
+      <div class="f-group">
+        <div class="f-icon">🆕</div>
+        <div class="f-wrap">
+          <div class="f-lbl">Nhân viên mới</div>
+          <input class="f-in" id="inp-trainee" type="text" placeholder="Nhập tên nhân viên mới...">
+        </div>
+      </div>
+      <div class="f-date">
+        <div class="f-icon">📅</div>
+        <div class="f-wrap" style="padding:0 10px">
+          <div class="f-lbl">Ngày bắt đầu</div>
+          <input class="f-in" id="inp-start" type="date" style="font-size:12px">
+        </div>
+      </div>
+      <div class="week-tag" id="week-tag">📆 Tuần 1</div>
+      <div class="save-tag" id="save-tag"><span class="sdot"></span><span id="save-txt">Đã tự lưu</span></div>
+    </div>
+
+    <!-- Row 2: action buttons -->
+    <div class="cb-row2">
+      <button class="b-green" onclick="exportImage()">
+        <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Xuất ảnh kết quả gửi sếp
+      </button>
+      <button class="b-blue" onclick="doExport()">
+        <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Xuất file JSON (backup)
+      </button>
+      <button class="b-gray" onclick="document.getElementById('fi').click()">
+        <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Nhập file JSON
+      </button>
+      <input type="file" id="fi" accept=".json" onchange="doImport(event)" style="display:none">
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+<!-- TAB: TỔNG QUAN -->
+<div id="tab-tong-quan" class="tab-p on">
+  <div class="info-card" id="ic-0"></div>
+  <div class="sec-hd">
+    <div class="sec-ti"><h2>🏠 Tổng quan tiến độ</h2><p>18 nội dung – Tiết Kiệm & Thẻ Tín Dụng</p></div>
+    <button class="b-blue" onclick="goTab('tiet-kiem')">
+      <svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>Vào training
+    </button>
+  </div>
+  <div class="s-row">
+    <div class="sc c1"><div class="sl">Tổng nội dung</div><div class="sv" id="s-tot">18</div><div class="ss">Tiết Kiệm + Thẻ TD</div></div>
+    <div class="sc c2"><div class="sl">Hoàn thành</div><div class="sv" id="s-ok">0</div><div class="ss">môn đã đạt</div></div>
+    <div class="sc c3"><div class="sl">Đang học</div><div class="sv" id="s-pr">0</div><div class="ss">đang thực hiện</div></div>
+    <div class="sc c4"><div class="sl">Cần ôn lại</div><div class="sv" id="s-rv">0</div><div class="ss">cần bổ sung</div></div>
+  </div>
+  <div class="tbox">
+    <div class="tbhd"><div><h3>Tiến độ chi tiết</h3><p id="ov-t">Cập nhật trạng thái ở các tab để theo dõi</p></div></div>
+    <div style="padding:16px 18px 8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:12px;color:var(--mut)">Tổng hoàn thành</span>
+        <span id="ov-p" style="font-size:16px;font-weight:800;color:var(--blue)">0%</span>
+      </div>
+      <div class="pbw" style="height:12px;border-radius:8px"><div class="pb" id="ov-b" style="width:0%;height:12px;border-radius:8px"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--mut)">💰 Tiết Kiệm (9)</span><span id="tk-p" style="font-size:11px;font-weight:700;color:var(--blue)">0%</span></div>
+          <div class="pbw"><div id="tk-b" class="pb" style="width:0%;background:var(--blue)"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--mut)">💳 Thẻ Tín Dụng (9)</span><span id="td-p" style="font-size:11px;font-weight:700;color:var(--org)">0%</span></div>
+          <div class="pbw"><div id="td-b" class="pb" style="width:0%;background:var(--org)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 18px 16px;margin-top:4px">
+      <table class="tt" style="min-width:auto">
+        <thead><tr><th style="width:26px">#</th><th>Nội dung</th><th style="width:88px">Module</th><th style="width:112px">Trạng thái</th><th style="width:90px">Mức độ</th></tr></thead>
+        <tbody id="ov-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: TIẾT KIỆM -->
+<div id="tab-tiet-kiem" class="tab-p">
+  <div class="info-card" id="ic-1"></div>
+  <div class="sec-hd"><div class="sec-ti"><h2>💰 Training Tiết Kiệm</h2><p>9 nội dung nghiệp vụ huy động tiền gửi</p></div></div>
+  <div class="tbox">
+    <div class="tbhd"><span class="mtag bl">💰 Tiết Kiệm</span><div><h3>Nghiệp vụ huy động & quản lý tiền gửi</h3><p>Kiến thức nền tảng sản phẩm tiết kiệm VIB</p></div></div>
+    <div class="tw"><table class="tt">
+      <thead><tr><th style="width:36px">STT</th><th style="min-width:145px">Nội dung</th><th style="min-width:185px">Mô tả</th><th style="width:104px">Ngày training</th><th style="width:104px">Ngày hoàn thành</th><th style="width:128px">Trạng thái</th><th style="width:98px">Mức độ</th><th style="min-width:125px">Ghi chú</th></tr></thead>
+      <tbody id="tk-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- TAB: THẺ TÍN DỤNG -->
+<div id="tab-the-tin-dung" class="tab-p">
+  <div class="info-card" id="ic-2"></div>
+  <div class="sec-hd"><div class="sec-ti"><h2>💳 Training Thẻ Tín Dụng</h2><p>9 nội dung nghiệp vụ thẻ tín dụng</p></div></div>
+  <div class="tbox">
+    <div class="tbhd"><span class="mtag og">Phần 1</span><div><h3>Thông tin về thẻ tín dụng</h3><p>Kiến thức tổng quan sản phẩm & chính sách</p></div></div>
+    <div class="tw"><table class="tt"><thead><tr><th style="width:36px">STT</th><th style="min-width:145px">Nội dung</th><th style="min-width:185px">Mô tả</th><th style="width:104px">Ngày training</th><th style="width:104px">Ngày hoàn thành</th><th style="width:128px">Trạng thái</th><th style="width:98px">Mức độ</th><th style="min-width:125px">Ghi chú</th></tr></thead><tbody id="td1-body"></tbody></table></div>
+  </div>
+  <div class="tbox">
+    <div class="tbhd"><span class="mtag og">Phần 2</span><div><h3>Quy trình đăng ký mở thẻ</h3><p>Thao tác hệ thống & quy trình vận hành</p></div></div>
+    <div class="tw"><table class="tt"><thead><tr><th style="width:36px">STT</th><th style="min-width:145px">Nội dung</th><th style="min-width:185px">Mô tả</th><th style="width:104px">Ngày training</th><th style="width:104px">Ngày hoàn thành</th><th style="width:128px">Trạng thái</th><th style="width:98px">Mức độ</th><th style="min-width:125px">Ghi chú</th></tr></thead><tbody id="td2-body"></tbody></table></div>
+  </div>
+  <div class="tbox">
+    <div class="tbhd"><span class="mtag og">Phần 3</span><div><h3>Kỹ năng khơi gợi nhu cầu khách hàng</h3><p>Tư vấn & phát triển khách hàng mở thẻ</p></div></div>
+    <div class="tw"><table class="tt"><thead><tr><th style="width:36px">STT</th><th style="min-width:145px">Nội dung</th><th style="min-width:185px">Mô tả</th><th style="width:104px">Ngày training</th><th style="width:104px">Ngày hoàn thành</th><th style="width:128px">Trạng thái</th><th style="width:98px">Mức độ</th><th style="min-width:125px">Ghi chú</th></tr></thead><tbody id="td3-body"></tbody></table></div>
+  </div>
+</div>
+
+<!-- TAB: HƯỚNG DẪN -->
+<div id="tab-huong-dan" class="tab-p">
+  <div class="info-card" id="ic-3"></div>
+  <div class="sec-hd"><div class="sec-ti"><h2>📖 Hướng dẫn sử dụng</h2><p>Vận hành file Training Team Kipi</p></div></div>
+  <div class="gg">
+    <div class="gc"><h4>🪪 Nhập tên (luôn hiển thị)</h4><p>Ô <b>Người đào tạo</b> và <b>Nhân viên mới</b> nằm ngay trong thanh điều khiển, luôn hiển thị trên mọi tab, mọi màn hình. Nhập một lần, hiển thị khắp nơi.</p></div>
+    <div class="gc"><h4>🖼️ Xuất ảnh gửi sếp</h4><p>Nhấn nút xanh lá <b>"Xuất ảnh kết quả gửi sếp"</b> → tạo ảnh PNG đẹp tổng hợp toàn bộ tiến độ đào tạo. Tải về và gửi qua Zalo/email ngay.</p></div>
+    <div class="gc og"><h4>💾 Backup dữ liệu</h4><p>Nhấn <b>"Xuất file JSON"</b> để lưu backup. Nhấn <b>"Nhập file JSON"</b> để khôi phục trên máy khác hoặc sau khi xóa cache trình duyệt.</p></div>
+    <div class="gc og"><h4>⭐ Mức độ nắm bắt</h4><p>Click vào sao: 1⭐ Cần cải thiện · 2⭐⭐ Trung bình · 3⭐⭐⭐ Khá · 4⭐⭐⭐⭐ Tốt · 5⭐⭐⭐⭐⭐ Xuất sắc</p></div>
+    <div class="gc"><h4>💡 Đạt yêu cầu đào tạo</h4><p>Hoàn thành tối thiểu <b>80% nội dung</b> (≥ 15/18 môn) trong vòng <b>4 tuần</b>. Báo cáo tuần để theo dõi tiến độ định kỳ.</p></div>
+    <div class="gc"><h4>🔄 Dữ liệu tự lưu</h4><p>Mỗi thay đổi được lưu tức thì vào trình duyệt. Chip <b>"✓ Đã lưu"</b> nhấp nháy xác nhận. Mở lại file trên cùng trình duyệt dữ liệu còn nguyên.</p></div>
+  </div>
+  <div class="tips"><h4>💡 Mẹo sử dụng</h4><ul style="padding-left:16px"><li>Cập nhật trạng thái ngay sau mỗi buổi training để báo cáo tuần chính xác</li><li>Ghi chú điểm yếu, bài tập về nhà vào cột Ghi chú</li><li>Xuất ảnh kết quả mỗi tuần gửi trưởng phòng theo dõi</li><li>Xuất file JSON backup cuối mỗi tuần phòng mất dữ liệu</li></ul></div>
+</div>
+
+</div><!-- .main -->
+
+<!-- MODAL: BÁO CÁO -->
+<div class="ov" id="m-rpt">
+  <div class="mdl">
+    <div class="mhd"><div><h2>📊 Báo cáo tiến độ Training</h2><p id="rpt-sub">Training Team Kipi – VIB</p></div><button class="mcl" onclick="cm('m-rpt')">✕</button></div>
+    <div class="mb" id="rpt-body"></div>
+  </div>
+</div>
+
+<!-- MODAL: ẢNH KẾT QUẢ -->
+<div class="ov" id="m-img">
+  <div class="mdl" style="max-width:680px">
+    <div class="mhd" style="background:linear-gradient(135deg,#0A3A20,#1A9E5A)">
+      <div><h2>🖼️ Ảnh kết quả đào tạo</h2><p id="img-sub">Sẵn sàng để gửi cho sếp</p></div>
+      <button class="mcl" onclick="cm('m-img')">✕</button>
+    </div>
+    <div class="mb" style="text-align:center">
+      <img id="res-img" style="width:100%;border-radius:10px;border:1px solid var(--bdr)" alt="">
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center">
+        <button class="b-green" id="dl-btn"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Tải ảnh PNG</button>
+        <button class="b-gray" onclick="cm('m-img')">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<canvas id="exp-canvas" style="display:none"></canvas>
+
+<script>
+/* DATA */
+const DATA={
+  tk:[
+    {id:'tk1',l:'Cách xem lãi suất trên Intranet',d:'Đăng nhập Intranet VIB → tra cứu biểu lãi suất huy động hiện hành theo kỳ hạn, loại tiền'},
+    {id:'tk2',l:'Cách tính lãi suất',d:'Gốc × Lãi suất × Số ngày / 365. Phân biệt lãi cuối kỳ, hàng tháng, lãi trước'},
+    {id:'tk3',l:'Các loại tiền gửi',d:'VND, USD, EUR… Quy định ngoại tệ, tỷ giá quy đổi, hạn mức giao dịch tại quầy'},
+    {id:'tk4',l:'Các sản phẩm tiền gửi',d:'Tiết kiệm có kỳ hạn, CCTG, HĐTG, iDepo, Tiết kiệm linh hoạt – đặc điểm từng loại'},
+    {id:'tk5',l:'Chuyển nhượng mua bán HĐTG iDepo',d:'Quy trình sang tên HĐTG/iDepo: hồ sơ, nhập hệ thống, KSV duyệt, in hợp đồng'},
+    {id:'tk6',l:'Trình mail ngoại lệ xin lãi suất',d:'Soạn email theo mẫu VIB: thông tin KH, số tiền, kỳ hạn, lý do ngoại lệ, cấp duyệt'},
+    {id:'tk7',l:'Mở TK cá nhân & hộ kinh doanh',d:'Thao tác My VIB, SmartSale: CCCD, eKYC, giấy phép KD, hạn mức TK, liên kết số'},
+    {id:'tk8',l:'Báo cáo liên quan tiết kiệm',d:'BC số dư huy động, đến hạn, tất toán, HĐTG theo ngày / tuần / tháng'},
+    {id:'tk9',l:'Vay cầm cố sổ tiết kiệm',d:'Tra hạn mức ACL, nhập/xuất kho sổ, lập HĐ cầm cố, theo dõi tài sản đảm bảo'},
+  ],
+  td1:[
+    {id:'td1a',l:'Tổng hợp các dòng thẻ tín dụng VIB',d:'Online Plus, Cashback, Travel, Premier… ưu đãi, hạn mức tối thiểu từng dòng thẻ'},
+    {id:'td1b',l:'Chính sách mở thẻ tín dụng',d:'Quy định điều kiện mở thẻ, đánh giá CIC, checklist hồ sơ theo từng phân khúc KH'},
+    {id:'td1c',l:'Biểu phí thẻ & chương trình ưu đãi',d:'Phí thường niên, chậm trả, rút tiền mặt; chương trình hoàn tiền, tích điểm, giảm giá'},
+    {id:'td1d',l:'Xuất báo cáo KH tiềm năng mở thẻ',d:'Lấy danh sách KH tiềm năng theo thu nhập, lịch sử GD, sản phẩm hiện có'},
+  ],
+  td2:[
+    {id:'td2a',l:'Thu thập hồ sơ mở thẻ tín dụng',d:'Danh mục hồ sơ theo từng loại KH: đi làm, kinh doanh, HSSV; kiểm tra hợp lệ'},
+    {id:'td2b',l:'KYC khách hàng trên SmartSale',d:'Xác minh danh tính: eKYC khuôn mặt, xác thực CCCD, kiểm tra CIC trên SmartSale'},
+    {id:'td2c',l:'Tạo hồ sơ thẻ trên ACL',d:'Nhập liệu KH, tải hồ sơ scan, trình KSV duyệt, theo dõi trạng thái hồ sơ'},
+    {id:'td2d',l:'Lưu trữ hồ sơ thẻ',d:'Quy định lưu hồ sơ giấy và điện tử, thời gian lưu, quy trình bàn giao, tra cứu'},
+  ],
+  td3:[
+    {id:'td3a',l:'Kỹ năng khơi gợi nhu cầu mở thẻ',d:'Phân tích nhu cầu KH theo hành vi tiêu dùng; câu hỏi mở hiệu quả; giới thiệu lợi ích'},
+  ]
+};
+const ATK=DATA.tk, ATD=[...DATA.td1,...DATA.td2,...DATA.td3], ALL=[...ATK,...ATD];
+const STS=['Chưa bắt đầu','Đang học','Hoàn thành','Cần ôn lại'];
+const SCS=['bnd','bpr','bok','brv'];
+let S={};
+
+/* STATE */
+function load(){
+  try{S=JSON.parse(localStorage.getItem('vib_kipi_v5')||'{}')}catch(e){S={}}
+  const today=new Date().toISOString().slice(0,10);
+  if(!S._s)S._s=today;
+  set('inp-trainer',S._tr||'');
+  set('inp-trainee',S._tv||'');
+  set('inp-start',S._s);
+  tick(); renderIC();
+}
+function set(id,val){const e=document.getElementById(id);if(e)e.value=val}
+function get(id){return(document.getElementById(id)||{}).value||''}
+function gi(id){return S[id]||{st:0,sr:0,dt:'',dd:'',nt:''}}
+
+function save(){
+  S._tr=get('inp-trainer');
+  S._tv=get('inp-trainee');
+  S._s=get('inp-start');
+  localStorage.setItem('vib_kipi_v5',JSON.stringify(S));
+  flash(); ov(); tick(); renderIC();
+}
+function sf(id,f,v2){
+  if(!S[id])S[id]={st:0,sr:0,dt:'',dd:'',nt:''};
+  S[id][f]=v2; save();
+}
+function flash(){
+  const p=document.getElementById('save-tag'),t=document.getElementById('save-txt');
+  if(!p||!t)return;
+  p.style.background='#B8F0D0'; t.textContent='✓ Đã lưu';
+  clearTimeout(p._t); p._t=setTimeout(()=>{p.style.background='';t.textContent='Đã tự lưu'},1800);
+}
+function tick(){
+  const sd=get('inp-start')||S._s; if(!sd)return;
+  const wk=Math.max(1,Math.ceil(((Date.now()-new Date(sd))/86400000+1)/7));
+  const e=document.getElementById('week-tag'); if(e)e.textContent='📆 Tuần '+wk;
+}
+
+/* INFO CARD */
+function renderIC(){
+  const trainer=S._tr||'', trainee=S._tv||'', sd=S._s||'';
+  const wk=Math.max(1,Math.ceil(((Date.now()-new Date(sd||Date.now()))/86400000+1)/7));
+  const done=ALL.filter(i=>gi(i.id).st===2).length;
+  const pct=Math.round(done/ALL.length*100);
+  const r=48, cr=17, circ=2*Math.PI*cr, dash=circ*pct/100;
+  const ringC=pct>=80?'#1A9E5A':pct>=40?'#0057A8':'#F47920';
+  const html=`<div class="ic-fields">
+    <div class="ic-item"><div class="ic-ico" style="background:var(--blt)">👤</div><div><div class="ic-lbl">Người đào tạo</div><div class="ic-val${trainer?'':' empty'}">${trainer||'Chưa nhập'}</div></div></div>
+    <div class="ic-item"><div class="ic-ico" style="background:var(--olt)">🆕</div><div><div class="ic-lbl">Nhân viên mới</div><div class="ic-val${trainee?'':' empty'}">${trainee||'Chưa nhập'}</div></div></div>
+    <div class="ic-item"><div class="ic-ico" style="background:var(--okb)">📅</div><div><div class="ic-lbl">Bắt đầu</div><div class="ic-val">${sd?new Date(sd).toLocaleDateString('vi-VN'):'–'}</div></div></div>
+    <div class="ic-item"><div class="ic-ico" style="background:var(--blt)">📆</div><div><div class="ic-lbl">Tuần đào tạo</div><div class="ic-val">Tuần ${wk}</div></div></div>
+  </div>
+  <div class="ic-ring">
+    <svg width="${r}" height="${r}" viewBox="0 0 ${r} ${r}"><circle cx="${r/2}" cy="${r/2}" r="${cr}" fill="none" stroke="var(--bdr)" stroke-width="4"/><circle cx="${r/2}" cy="${r/2}" r="${cr}" fill="none" stroke="${ringC}" stroke-width="4" stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 ${r/2} ${r/2})"/></svg>
+    <div class="ic-ring-txt">${pct}%</div>
+  </div>`;
+  for(let i=0;i<4;i++){const e=document.getElementById('ic-'+i);if(e)e.innerHTML=html}
+}
+
+/* TABLE */
+function buildRow(item,i,isOg){
+  const d=gi(item.id);
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td style="text-align:center"><span class="nb${isOg?' og':''}">${i+1}</span></td>
+    <td><div class="tn">${item.l}</div></td>
+    <td><div class="td2">${item.d}</div></td>
+    <td><input class="dti" type="date" value="${d.dt||''}" onchange="sf('${item.id}','dt',this.value)"></td>
+    <td><input class="dti" type="date" value="${d.dd||''}" onchange="sf('${item.id}','dd',this.value)"></td>
+    <td><select class="sel" onchange="sf('${item.id}','st',+this.value)">${STS.map((s,j)=>`<option value="${j}"${d.st===j?' selected':''}>${s}</option>`).join('')}</select></td>
+    <td><div class="stars" id="sr-${item.id}">${[1,2,3,4,5].map(n=>`<span class="star${d.sr>=n?' lit':''}" onclick="setStar('${item.id}',${n})">★</span>`).join('')}</div></td>
+    <td><textarea class="nta" rows="2" placeholder="Ghi chú..." onchange="sf('${item.id}','nt',this.value)">${d.nt||''}</textarea></td>`;
+  return tr;
+}
+function fillTbody(tid,items,isOg){
+  const el=document.getElementById(tid); if(!el)return;
+  el.innerHTML=''; items.forEach((it,i)=>el.appendChild(buildRow(it,i,isOg)));
+}
+function setStar(id,n){
+  if(!S[id])S[id]={st:0,sr:0,dt:'',dd:'',nt:''};
+  S[id].sr=n;
+  const c=document.getElementById('sr-'+id);
+  if(c)c.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('lit',i<n));
+  save();
+}
+
+/* OVERVIEW */
+function ov(){
+  let ok=0,pr=0,rv=0;
+  ALL.forEach(it=>{const s=gi(it.id).st;if(s===2)ok++;else if(s===1)pr++;else if(s===3)rv++;});
+  ['s-tot','s-ok','s-pr','s-rv'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=[ALL.length,ok,pr,rv][i]});
+  const pct=Math.round(ok/ALL.length*100);
+  const op=document.getElementById('ov-p'),ob=document.getElementById('ov-b'),ot=document.getElementById('ov-t');
+  if(op)op.textContent=pct+'%'; if(ob)ob.style.width=pct+'%';
+  if(ot)ot.textContent=`${ok}/${ALL.length} nội dung hoàn thành (${pct}%)`;
+  const tkD=ATK.filter(i=>gi(i.id).st===2).length, tdD=ATD.filter(i=>gi(i.id).st===2).length;
+  const tkP=Math.round(tkD/ATK.length*100), tdP=Math.round(tdD/ATD.length*100);
+  ['tk-p','td-p'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=[tkP,tdP][i]+'%'});
+  const tb=document.getElementById('tk-b'),tdb=document.getElementById('td-b');
+  if(tb)tb.style.width=tkP+'%'; if(tdb)tdb.style.width=tdP+'%';
+  const body=document.getElementById('ov-body'); if(!body)return;
+  body.innerHTML='';
+  ALL.forEach((it,idx)=>{
+    const d=gi(it.id); const isOg=idx>=ATK.length;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="text-align:center"><span class="nb${isOg?' og':''}">${idx+1}</span></td>
+      <td><div class="tn" style="font-size:12px">${it.l}</div></td>
+      <td><span class="bdg ${isOg?'':'bnd'}" style="${isOg?'background:var(--olt);color:var(--odk)':''}">${isOg?'💳 Thẻ':'💰 TK'}</span></td>
+      <td><span class="bdg ${SCS[d.st]}">${STS[d.st]}</span></td>
+      <td>${[1,2,3,4,5].map(n=>`<span style="color:${d.sr>=n?'var(--org)':'#D8E8F5'};font-size:13px">★</span>`).join('')}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+/* TABS */
+function goTab(name){
+  document.querySelectorAll('.t-btn').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  document.querySelectorAll('.tab-p').forEach(p=>p.classList.toggle('on',p.id==='tab-'+name));
+}
+document.getElementById('nav-row').addEventListener('click',e=>{
+  const b=e.target.closest('[data-tab]'); if(b)goTab(b.dataset.tab);
+});
+
+/* MODALS */
+function om(id){document.getElementById(id).classList.add('on')}
+function cm(id){document.getElementById(id).classList.remove('on')}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on')}));
+
+/* REPORT */
+function openReport(){
+  const trainer=S._tr||'(chưa nhập)', trainee=S._tv||'(chưa nhập)', sd=S._s||'';
+  const now=new Date(), wk=Math.max(1,Math.ceil(((now-new Date(sd||now))/86400000+1)/7));
+  document.getElementById('rpt-sub').textContent=`Tuần ${wk} · ${now.toLocaleDateString('vi-VN')} · Trainer: ${trainer}`;
+  let ok=0,pr=0,rv=0,nd=0;
+  ALL.forEach(i=>{const s=gi(i.id).st;if(s===2)ok++;else if(s===1)pr++;else if(s===3)rv++;else nd++;});
+  const tkD=ATK.filter(i=>gi(i.id).st===2).length, tdD=ATD.filter(i=>gi(i.id).st===2).length;
+  const pr2=(lb,d,t,c)=>`<div class="rpr"><div class="rl">${lb}</div><div class="rw"><div class="rb" style="width:${Math.round(d/t*100)}%;background:${c}"></div></div><div class="rp" style="color:${c}">${Math.round(d/t*100)}%</div></div>`;
+  const dr=items=>items.map(it=>{const d=gi(it.id);return`<tr><td>${it.l}</td><td style="text-align:center"><span class="bdg ${SCS[d.st]}">${STS[d.st]}</span></td><td style="font-size:12px;color:var(--org)">${'★'.repeat(d.sr)}${'☆'.repeat(5-d.sr)}</td><td>${d.dd||'–'}</td><td style="font-size:10px;color:var(--mut)">${d.nt||'–'}</td></tr>`;}).join('');
+  document.getElementById('rpt-body').innerHTML=`
+    <div class="rs"><h3>📋 Thông tin chung</h3><div class="rmg">
+      <div class="rmi"><label>Người đào tạo</label><span>${trainer}</span></div>
+      <div class="rmi"><label>Nhân viên mới</label><span>${trainee}</span></div>
+      <div class="rmi"><label>Ngày bắt đầu</label><span>${sd?new Date(sd).toLocaleDateString('vi-VN'):'–'}</span></div>
+      <div class="rmi"><label>Tuần đào tạo</label><span>Tuần ${wk}</span></div>
+    </div></div>
+    <div class="rs"><h3>📊 Tổng quan</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px">
+        ${[['var(--okb)','var(--ok)',ok,'Hoàn thành'],['var(--olt)','var(--odk)',pr,'Đang học'],['var(--erb)','var(--err)',rv,'Cần ôn lại'],['var(--gray)','var(--mut)',nd,'Chưa bắt đầu']].map(([bg,c,v,lb])=>`<div style="text-align:center;background:${bg};border-radius:9px;padding:10px"><div style="font-size:21px;font-weight:800;color:${c}">${v}</div><div style="font-size:10px;color:var(--mut)">${lb}</div></div>`).join('')}
+      </div>
+      ${pr2('Tổng ('+ALL.length+' nội dung)',ok,ALL.length,'var(--blue)')}
+      ${pr2('💰 Tiết Kiệm ('+ATK.length+')',tkD,ATK.length,'var(--blue)')}
+      ${pr2('💳 Thẻ Tín Dụng ('+ATD.length+')',tdD,ATD.length,'var(--org)')}
+    </div>
+    <div class="rs"><h3>💰 Chi tiết – Tiết Kiệm</h3><table class="rt"><thead><tr><th>Nội dung</th><th style="width:108px">Trạng thái</th><th style="width:78px">Mức độ</th><th style="width:85px">Ngày HT</th><th>Ghi chú</th></tr></thead><tbody>${dr(ATK)}</tbody></table></div>
+    <div class="rs"><h3>💳 Chi tiết – Thẻ Tín Dụng</h3><table class="rt"><thead><tr><th>Nội dung</th><th style="width:108px">Trạng thái</th><th style="width:78px">Mức độ</th><th style="width:85px">Ngày HT</th><th>Ghi chú</th></tr></thead><tbody>${dr(ATD)}</tbody></table></div>
+    <div style="display:flex;gap:9px;justify-content:flex-end;padding-top:11px;border-top:1px solid var(--bdr);margin-top:4px">
+      <button class="b-blue" onclick="window.print()"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>In / Lưu PDF</button>
+      <button class="b-gray" onclick="cm('m-rpt')">Đóng</button>
+    </div>`;
+  om('m-rpt');
+}
+
+/* EXPORT IMAGE */
+function exportImage(){
+  const trainer=S._tr||'Chưa nhập', trainee=S._tv||'Chưa nhập', sd=S._s||'';
+  const now=new Date(), wk=Math.max(1,Math.ceil(((now-new Date(sd||now))/86400000+1)/7));
+  let ok=0,pr=0,rv=0,nd=0;
+  ALL.forEach(it=>{const s=gi(it.id).st;if(s===2)ok++;else if(s===1)pr++;else if(s===3)rv++;else nd++;});
+  const tkD=ATK.filter(i=>gi(i.id).st===2).length, tdD=ATD.filter(i=>gi(i.id).st===2).length;
+  const pct=Math.round(ok/ALL.length*100);
+  // Wider to fit extra date column
+  const W=780, ROWH=28, ROWY=ALL.length*ROWH, H=88+76+100+64+24+ROWY+60;
+  const cv=document.getElementById('exp-canvas');
+  cv.width=W*2; cv.height=H*2; cv.style.width=W+'px'; cv.style.height=H+'px';
+  const cx=cv.getContext('2d'); cx.scale(2,2);
+  function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.lineTo(x+w-r,y);cx.quadraticCurveTo(x+w,y,x+w,y+r);cx.lineTo(x+w,y+h-r);cx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);cx.lineTo(x+r,y+h);cx.quadraticCurveTo(x,y+h,x,y+h-r);cx.lineTo(x,y+r);cx.quadraticCurveTo(x,y,x+r,y);cx.closePath();}
+  function fmtDate(s){if(!s)return'–';try{return new Date(s).toLocaleDateString('vi-VN');}catch{return'–';}}
+  // BG
+  cx.fillStyle='#F4F8FE'; cx.fillRect(0,0,W,H);
+  // HEADER BANNER
+  const g=cx.createLinearGradient(0,0,W,0); g.addColorStop(0,'#002B5C'); g.addColorStop(.6,'#0057A8'); g.addColorStop(1,'#1A6FC4');
+  cx.fillStyle=g; rr(0,0,W,80,0); cx.fill();
+  // Logo square
+  const lg=cx.createLinearGradient(18,16,66,64); lg.addColorStop(0,'#FF9A40'); lg.addColorStop(1,'#F47920');
+  cx.fillStyle=lg; rr(18,16,48,48,10); cx.fill();
+  cx.fillStyle='#fff'; cx.font='bold 15px Arial'; cx.textAlign='center'; cx.fillText('VIB',42,47);
+  // Title
+  cx.fillStyle='#fff'; cx.font='bold 17px Arial'; cx.textAlign='left'; cx.fillText('Training Team Kipi – Kết quả đào tạo',80,36);
+  cx.fillStyle='rgba(255,255,255,.6)'; cx.font='11px Arial'; cx.fillText('Vietnam International Bank · '+now.toLocaleDateString('vi-VN'),80,54);
+  // Week badge
+  cx.fillStyle='rgba(255,255,255,.2)'; rr(W-108,22,90,28,14); cx.fill();
+  cx.fillStyle='#fff'; cx.font='bold 12px Arial'; cx.textAlign='center'; cx.fillText('Tuần '+wk,W-63,41);
+  let y=88;
+  // INFO ROW
+  cx.fillStyle='#fff'; rr(14,y,W-28,66,12); cx.fill();
+  cx.strokeStyle='#D6E4F5'; cx.lineWidth=1; rr(14,y,W-28,66,12); cx.stroke();
+  const flds=[['👤','Người đào tạo',trainer],['🆕','Nhân viên mới',trainee],['📅','Ngày bắt đầu',sd?new Date(sd).toLocaleDateString('vi-VN'):'–'],['📊','Tiến độ',pct+'%  ('+ok+'/'+ALL.length+')']];
+  const fw=(W-28)/4;
+  flds.forEach(([ic,lb,vl],i)=>{
+    const fx=14+i*fw+fw/2;
+    cx.font='14px Arial'; cx.textAlign='center'; cx.fillStyle='#1A2B4A'; cx.fillText(ic,fx,y+20);
+    cx.font='700 8px Arial'; cx.fillStyle='#5A718A'; cx.fillText(lb.toUpperCase(),fx,y+34);
+    cx.font='bold 12px Arial'; cx.fillStyle='#003E7E'; cx.fillText(vl,fx,y+52);
+    if(i<3){cx.strokeStyle='#E8F0FA'; cx.lineWidth=1; cx.beginPath(); cx.moveTo(14+(i+1)*fw,y+10); cx.lineTo(14+(i+1)*fw,y+58); cx.stroke();}
+  });
+  y+=76;
+  // PROGRESS BARS
+  [['Tổng tiến độ ('+ALL.length+' nội dung)',pct,'#0057A8'],
+   ['💰 Tiết Kiệm ('+ATK.length+' môn)',Math.round(tkD/ATK.length*100),'#1A6FC4'],
+   ['💳 Thẻ Tín Dụng ('+ATD.length+' môn)',Math.round(tdD/ATD.length*100),'#F47920']
+  ].forEach(([lb,p,c])=>{
+    cx.font='11px Arial'; cx.textAlign='left'; cx.fillStyle='#1A2B4A'; cx.fillText(lb,14,y+12);
+    cx.font='bold 11px Arial'; cx.textAlign='right'; cx.fillStyle=c; cx.fillText(p+'%',W-14,y+12);
+    cx.fillStyle='#D6E4F5'; rr(14,y+15,W-28,8,4); cx.fill();
+    cx.fillStyle=c; rr(14,y+15,Math.max(8,(W-28)*p/100),8,4); cx.fill();
+    y+=30;
+  });
+  y+=6;
+  // STAT BOXES
+  const stats=[[ok,'Hoàn thành','#EAF7EF','#1A9E5A'],[pr,'Đang học','#FEF3E8','#C45F0A'],[rv,'Cần ôn lại','#FDECEA','#C0392B'],[nd,'Chưa học','#EEF3FA','#5A718A']];
+  const sw=(W-28-9)/4;
+  stats.forEach(([v,lb,bg,c],i)=>{
+    const sx=14+i*(sw+3);
+    cx.fillStyle=bg; rr(sx,y,sw,48,10); cx.fill();
+    cx.font='bold 22px Arial'; cx.textAlign='center'; cx.fillStyle=c; cx.fillText(v,sx+sw/2,y+28);
+    cx.font='8px Arial'; cx.fillStyle='#5A718A'; cx.fillText(lb,sx+sw/2,y+42);
+  });
+  y+=58;
+  // TABLE HEADER  — columns: #, tên, module, ngày training, ngày HT, trạng thái, mức độ
+  // Col positions: num=14, name=50, mod=320, dtrain=388, ddone=476, status=558, stars=650
+  cx.fillStyle='#003E7E'; cx.fillRect(14,y,W-28,24);
+  cx.fillStyle='rgba(255,255,255,.9)'; cx.font='bold 8px Arial'; cx.textAlign='left';
+  [
+    [18,'#'],[46,'NỘI DUNG TRAINING'],[320,'MODULE'],[388,'NGÀY TRAINING'],[476,'NGÀY HOÀN THÀNH'],[558,'TRẠNG THÁI'],[660,'MỨC ĐỘ']
+  ].forEach(([x,t])=>cx.fillText(t,14+x,y+16));
+  y+=24;
+  // TABLE ROWS
+  ALL.forEach((it,idx)=>{
+    const d=gi(it.id); const isOg=idx>=ATK.length;
+    // Row bg
+    cx.fillStyle=idx%2?'#F8FBFF':'#fff'; cx.fillRect(14,y,W-28,ROWH);
+    // Bottom border
+    cx.strokeStyle='#E8F0FA'; cx.lineWidth=.5;
+    cx.beginPath(); cx.moveTo(14,y+ROWH); cx.lineTo(W-14,y+ROWH); cx.stroke();
+    // Number circle
+    cx.fillStyle=isOg?'#FEF3E8':'#E8F1FB';
+    cx.beginPath(); cx.arc(14+27,y+14,10,0,Math.PI*2); cx.fill();
+    cx.font='bold 9px Arial'; cx.textAlign='center'; cx.fillStyle=isOg?'#C45F0A':'#0057A8';
+    cx.fillText(idx+1,14+27,y+18);
+    // Name (truncate to fit)
+    cx.font='10px Arial'; cx.textAlign='left'; cx.fillStyle='#1A2B4A';
+    const nm=it.l.length>30?it.l.slice(0,29)+'…':it.l;
+    cx.fillText(nm,14+46,y+16);
+    // Module badge
+    cx.fillStyle=isOg?'#FEF3E8':'#E8F1FB'; rr(14+318,y+6,56,16,8); cx.fill();
+    cx.font='bold 8px Arial'; cx.textAlign='center'; cx.fillStyle=isOg?'#C45F0A':'#0057A8';
+    cx.fillText(isOg?'Thẻ TD':'TK',14+346,y+17);
+    // Ngày training
+    cx.font='10px Arial'; cx.textAlign='center'; cx.fillStyle=d.dt?'#1A2B4A':'#B0C4D8';
+    cx.fillText(fmtDate(d.dt),14+432,y+16);
+    // Ngày hoàn thành
+    cx.fillStyle=d.dd?'#1A9E5A':'#B0C4D8';
+    cx.fillText(fmtDate(d.dd),14+520,y+16);
+    // Status badge
+    const stCols=[['#EEF3FA','#5A718A'],['#FEF3E8','#C45F0A'],['#EAF7EF','#1A9E5A'],['#FDECEA','#C0392B']];
+    const [sbg,sc]=stCols[d.st]; cx.fillStyle=sbg; rr(14+550,y+6,88,16,8); cx.fill();
+    cx.font='bold 8px Arial'; cx.textAlign='center'; cx.fillStyle=sc; cx.fillText(STS[d.st],14+594,y+17);
+    // Stars
+    for(let s=0;s<5;s++){
+      cx.fillStyle=d.sr>s?'#F47920':'#D8E8F5';
+      cx.font='12px Arial'; cx.textAlign='center'; cx.fillText('★',14+654+s*14,y+17);
+    }
+    y+=ROWH;
+  });
+  // FOOTER
+  y+=10; cx.fillStyle='#003E7E'; rr(14,y,W-28,28,8); cx.fill();
+  cx.fillStyle='rgba(255,255,255,.8)'; cx.font='10px Arial'; cx.textAlign='center';
+  cx.fillText('Vietnam International Bank · Training Team Kipi · '+now.toLocaleString('vi-VN'),W/2,y+18);
+  const url=cv.toDataURL('image/png');
+  document.getElementById('res-img').src=url;
+  document.getElementById('img-sub').textContent=`${trainee} · Tuần ${wk} · ${now.toLocaleDateString('vi-VN')}`;
+  const dlb=document.getElementById('dl-btn');
+  dlb.onclick=()=>{const a=document.createElement('a'); const tn=(trainee||'training').replace(/\s+/g,'_'); a.href=url; a.download=`VIB_KetQua_${tn}_Tuan${wk}.png`; a.click(); toast('✅ Đã tải ảnh thành công!','ok');};
+  om('m-img');
+}
+
+/* JSON EXPORT/IMPORT */
+function doExport(){
+  S._tr=get('inp-trainer'); S._tv=get('inp-trainee'); S._s=get('inp-start'); S._at=new Date().toISOString();
+  const a=document.createElement('a'); const tn=(S._tv||'backup').replace(/\s+/g,'_'); const dt=new Date().toLocaleDateString('vi-VN').replace(/\//g,'-');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));
+  a.download=`VIB_Kipi_${tn}_${dt}.json`; a.click();
+  toast('✅ Đã xuất file JSON thành công!','ok');
+}
+function doImport(e){
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader(); r.onload=ev=>{
+    try{
+      const imp=JSON.parse(ev.target.result);
+      if(typeof imp!=='object'||Array.isArray(imp))throw 0;
+      S=imp; localStorage.setItem('vib_kipi_v5',JSON.stringify(S));
+      set('inp-trainer',S._tr||''); set('inp-trainee',S._tv||''); set('inp-start',S._s||'');
+      fillTbody('tk-body',DATA.tk,false); fillTbody('td1-body',DATA.td1,true); fillTbody('td2-body',DATA.td2,true); fillTbody('td3-body',DATA.td3,true);
+      ov(); tick(); renderIC();
+      toast('✅ Nhập dữ liệu thành công! Tất cả đã được khôi phục.','ok');
+    }catch{toast('❌ File không hợp lệ. Chọn đúng file JSON từ app này.','err')}
+    e.target.value='';
+  }; r.readAsText(f);
+}
+
+/* TOAST */
+let _tt;
+function toast(msg,type){
+  const t=document.getElementById('toast'); t.textContent=msg; t.className=type||'';
+  setTimeout(()=>t.classList.add('on'),10); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('on'),3200);
+}
+
+/* INIT */
+document.getElementById('inp-trainer').addEventListener('input',save);
+document.getElementById('inp-trainee').addEventListener('input',save);
+document.getElementById('inp-start').addEventListener('change',save);
+
+load();
+fillTbody('tk-body',DATA.tk,false);
+fillTbody('td1-body',DATA.td1,true);
+fillTbody('td2-body',DATA.td2,true);
+fillTbody('td3-body',DATA.td3,true);
+ov();
+</script>
+</body>
+</html>
